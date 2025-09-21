@@ -2,7 +2,7 @@
 Implementation of mini version of the GPT-3 OSS model from scratch in PyTorch.
 This repo includes everything needed for dataset preparation, training, inference, and experimentation on small-scale datasets like TinyStories.
 
-![GPT-3 OSS](gemma.png)
+![GPT-3 OSS](gpt-oss.png)
 
 
 ---
