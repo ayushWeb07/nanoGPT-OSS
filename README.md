@@ -1,7 +1,8 @@
-# Gemma3 270M from Scratch (PyTorch)
-Implementing the Gemma3 270M transformer model from scratch using PyTorch. This repo includes all components for training, inference, and experimenting with Gemma3 on small datasets like TinyStories.
+# GPT-3 OSS from Scratch (PyTorch)
+Implementation of mini version of the GPT-3 OSS model from scratch in PyTorch.
+This repo includes everything needed for dataset preparation, training, inference, and experimentation on small-scale datasets like TinyStories.
 
-![Gemma3 Model](gemma.png)
+![GPT-3 OSS](gemma.png)
 
 
 ---
@@ -9,12 +10,15 @@ Implementing the Gemma3 270M transformer model from scratch using PyTorch. This 
 ## 📂 Project Structure
 
 ```bash
-├── dataset.py       # Handles TinyStories dataset + BPE tokenization
-├── model.py         # Implements Gemma3 architecture (attention, transformer blocks, embeddings)
-├── train.py         # Training loop with warmup + cosine annealing scheduler
+├── tokenizer.py     # Used the TikToken o200k_harmony model
+├── dataset.py       # TinyStories dataset 
+└── config.py        # Deals with the model configuration
+├── model.py         # GPT-3 OSS architecture (GQA, RoPE, MoE, etc.)
+├── train.py         # Training loop (warmup + cosine annealing)
 ├── inference.py     # Inference / text generation script
 ├── requirements.txt # Python dependencies
-└── README.md        # Project overview & instructions
+└── README.md        # Project overview
+
 ```
 
 
@@ -22,14 +26,15 @@ Implementing the Gemma3 270M transformer model from scratch using PyTorch. This 
 
 ## 🚀 Features
 - **From-scratch Gemma3 implementation**  
-  - Multi-Query Attention
-  - Sliding Attention
+  - Grouped-Query Attention
+  - Alternate Sliding-Full Attention
   - Transformer Blocks with RMSNorm  
-  - FeedForward MLP with dual parallel expansion networks
   - Token & Positional Embeddings
   - Weight tying & initialization
   - Query-Key (QK) normalization
   - Rotary Positional Embeddings (RoPE)
+  - FeedForward Expert MLP with dual parallel expansion networks
+  - Mixture of Experts (MoE)
   
 - **Training pipeline**  
   - [TinyStories dataset](https://huggingface.co/datasets/roneneldan/TinyStories) (HuggingFace)  
@@ -48,36 +53,51 @@ Implementing the Gemma3 270M transformer model from scratch using PyTorch. This 
 
 ## 📊 Model Config (default)
 ```python
-GEMMA3_CONFIG = {
-    "vocab_size": 50257,
-    "context_length": 32768,
-    "emb_dim": 640,
-    "n_heads": 4,
-    "n_layers": 18,
-    "hid_dim": 2048,
-    "head_dim": 256,
-    "rope_local_base": 10000.0,
-    "rope_base": 1000000.0,
-    "sliding_window": 512,
+
+GPT_CONFIG = {
+    
+    "vocab_size": 201088,
+    "context_length": 4096,
+    "emb_dim": 2880,
+    "hid_dim": 2880,
+    "head_dim": 64,
+    
+    "n_heads": 64,
+    "n_kv_heads": 8,
+    
+    "n_layers": 24,
+    
+    "num_experts": 32,
+    "num_active_experts": 4,
+    
+    "rope_base": 150000.0,
+    "sliding_window": 128, 
     "layer_types": [
-        "sliding_attention",
-        "sliding_attention",
-        "sliding_attention",
-        "sliding_attention",
+        "full_attention",
         "sliding_attention",
         "full_attention",
         "sliding_attention",
-        "sliding_attention",
-        "sliding_attention",
-        "sliding_attention",
+        "full_attention",
         "sliding_attention",
         "full_attention",
         "sliding_attention",
+        "full_attention",
         "sliding_attention",
+        "full_attention",
         "sliding_attention",
+        "full_attention",
         "sliding_attention",
+        "full_attention",
         "sliding_attention",
-        "full_attention"
+        "full_attention",
+        "sliding_attention",
+        "full_attention",
+        "sliding_attention",
+        "full_attention",
+        "sliding_attention",
+        "full_attention",
+        "sliding_attention",
+        
     ],
     "dtype": torch.bfloat16
 }
@@ -88,8 +108,8 @@ GEMMA3_CONFIG = {
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/ayushWeb07/Gemma3-Implementation.git
-cd Gemma3-Implementation
+git clone https://github.com/ayushWeb07/nanoGPT-OSS.git
+cd nanoGPT-OSS
 pip install -r requirements.txt
 ```
 
@@ -141,7 +161,7 @@ Text (after generation): Once upon a time there was a pumpkin. The pumpkin loved
 
 This project was inspired and guided by the following resources:
 
-- [Pretraining Gemma3- Vizuara](https://youtu.be/bLDlwcl6hbA?list=PLPTV0NXA_ZSiR4_XoR1wy-3bv6J0oZ9Zs)
+- [Pretraining OSS- Vizuara](https://www.youtube.com/playlist?list=PLPTV0NXA_ZSiR4_XoR1wy-3bv6J0oZ9Zs)
 
 - [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
 
